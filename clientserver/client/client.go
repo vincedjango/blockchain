@@ -18,7 +18,6 @@ type Token int32
 
 const (
 	BTC Token = iota
-	ETH
 	ADA
 )
 
@@ -40,13 +39,10 @@ func main() {
 	client := proto.NewClientServerServiceClient(cc)
 
 	createBlockchain(client, BTC)
-	createBlockchain(client, ETH)
 	createBlockchain(client, ADA)
 	AddBlock(client, BTC)
-	AddBlock(client, ETH)
 	AddBlock(client, ADA)
 	isValid(client, BTC)
-	isValid(client, ETH)
 	isValid(client, ADA)
 }
 

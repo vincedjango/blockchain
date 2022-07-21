@@ -1,6 +1,7 @@
 package main
 
 import (
+	"blockchain"
 	"context"
 	"fmt"
 	"io"
@@ -9,8 +10,6 @@ import (
 	"proto"
 	"strconv"
 	"time"
-
-	"blockchain"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -23,14 +22,12 @@ type server struct {
 }
 
 const (
-	BTC = iota
-	ETH
-	ADA
+	cBTC = iota
+	cADA
 )
 
-var bcBTC blockchain.Blockchain
-var bcETH blockchain.Blockchain
-var bcADA blockchain.Blockchain
+var bcBTC *blockchain.BlockchainBTC
+var bcADA *blockchain.BlockchainADA
 
 func main() {
 	// 50051 is the default port for grpc
@@ -66,12 +63,10 @@ func (*server) CreateBlockchain(ctx context.Context, in *proto.CreationRequest) 
 	token := in.GetToken()
 
 	switch token {
-	case BTC:
-		bcBTC = blockchain.CreateBlockchain(int(difficulty))
-	case ETH:
-		bcETH = blockchain.CreateBlockchain(int(difficulty))
-	case ADA:
-		bcADA = blockchain.CreateBlockchain(int(difficulty))
+	case cBTC:
+		bcBTC = blockchain.CreateBlockchainBTC(int(difficulty))
+	case cADA:
+		bcADA = blockchain.CreateBlockchainADA(int(difficulty))
 	}
 
 	response := proto.CreationResponse{
@@ -98,18 +93,11 @@ func (*server) AddBlock(stream proto.ClientServerService_AddBlockServer) error {
 			return status.Error(codes.Internal, "The block failed to be created")
 		}
 
-		from := req.GetBlock().GetFrom()
-		to := req.GetBlock().GetTo()
-		amount := req.GetBlock().GetAmount()
-		token := req.GetToken()
-
-		switch token {
-		case BTC:
-			bcBTC.AddBlock(from, to, amount)
-		case ETH:
-			bcETH.AddBlock(from, to, amount)
-		case ADA:
-			bcADA.AddBlock(from, to, amount)
+		switch req.GetToken() {
+		case cBTC:
+			blockchain.IAddBlock(bcBTC, req.GetBlock().GetFrom(), req.GetBlock().GetTo(), req.GetBlock().GetAmount())
+		case cADA:
+			blockchain.IAddBlock(bcADA, req.GetBlock().GetFrom(), req.GetBlock().GetTo(), req.GetBlock().GetAmount())
 		}
 	}
 }
@@ -125,19 +113,13 @@ func (*server) IsValid(req *proto.IsValidRequest, stream proto.ClientServerServi
 	for i := 0; i < int(redundancy); i++ {
 
 		switch token {
-		case BTC:
+		case cBTC:
 			if bcBTC.IsValid() == true {
 				result = "Check #" + strconv.Itoa(i) + " is valid."
 			} else {
 				result = "Check #" + strconv.Itoa(i) + " is invalid."
 			}
-		case ETH:
-			if bcETH.IsValid() == true {
-				result = "Check #" + strconv.Itoa(i) + " is valid."
-			} else {
-				result = "Check #" + strconv.Itoa(i) + " is invalid."
-			}
-		case ADA:
+		case cADA:
 			if bcADA.IsValid() == true {
 				result = "Check #" + strconv.Itoa(i) + " is valid."
 			} else {
