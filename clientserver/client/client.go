@@ -76,7 +76,8 @@ func AddBlock(client proto.ClientServerServiceClient, tok Token) {
 				To:     "User2",
 				Amount: 1,
 			},
-			Token: int32(tok),
+			Token:  int32(tok),
+			Number: 3,
 		},
 		&proto.AddBlockRequest{
 			Block: &proto.Block{
@@ -84,7 +85,8 @@ func AddBlock(client proto.ClientServerServiceClient, tok Token) {
 				To:     "User3",
 				Amount: 2,
 			},
-			Token: int32(tok),
+			Token:  int32(tok),
+			Number: 1,
 		},
 		&proto.AddBlockRequest{
 			Block: &proto.Block{
@@ -92,7 +94,8 @@ func AddBlock(client proto.ClientServerServiceClient, tok Token) {
 				To:     "User4",
 				Amount: 3,
 			},
-			Token: int32(tok),
+			Token:  int32(tok),
+			Number: 20,
 		},
 	}
 

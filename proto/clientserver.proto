@@ -21,6 +21,7 @@ message CreationResponse{
 message AddBlockRequest{
     Block block = 1;
     int32 token = 2;
+    int32 number = 3;
 }
 
 message AddBlockResponse{

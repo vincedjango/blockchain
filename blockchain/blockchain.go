@@ -105,8 +105,20 @@ func CreateBlockchainADA(difficulty int) *BlockchainADA {
 	}
 }
 
-func IAddBlock(bc Tblockchain, from, to string, amount float32) {
-	bc.AddBlock(from, to, amount)
+func IAddBlock(bc Tblockchain, from, to string, amount float32, number int32) {
+	ch := make(chan int, number)
+
+	go func() {
+		defer close(ch)
+		for i := 0; int32(i) < number; i++ {
+			bc.AddBlock(from, to, amount)
+			ch <- i
+		}
+	}()
+
+	for v := range ch {
+		fmt.Printf("Block %d was created.\n", v)
+	}
 }
 
 func (b *BlockchainBTC) AddBlock(from, to string, amount float32) {

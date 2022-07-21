@@ -95,9 +95,9 @@ func (*server) AddBlock(stream proto.ClientServerService_AddBlockServer) error {
 
 		switch req.GetToken() {
 		case cBTC:
-			blockchain.IAddBlock(bcBTC, req.GetBlock().GetFrom(), req.GetBlock().GetTo(), req.GetBlock().GetAmount())
+			blockchain.IAddBlock(bcBTC, req.GetBlock().GetFrom(), req.GetBlock().GetTo(), req.GetBlock().GetAmount(), req.GetNumber())
 		case cADA:
-			blockchain.IAddBlock(bcADA, req.GetBlock().GetFrom(), req.GetBlock().GetTo(), req.GetBlock().GetAmount())
+			blockchain.IAddBlock(bcADA, req.GetBlock().GetFrom(), req.GetBlock().GetTo(), req.GetBlock().GetAmount(), req.GetNumber())
 		}
 	}
 }
