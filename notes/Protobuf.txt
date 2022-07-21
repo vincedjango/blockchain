@@ -1,0 +1,2 @@
+Command to generate new protobuff:
+	protoc -Iproto --go_out=proto --go_opt=module=proto --go-grpc_out=proto --go-grpc_opt=module=proto proto/clientserver.proto

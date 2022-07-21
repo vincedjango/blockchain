@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package clientserver;
+option go_package = "./proto";
+
+message Block{
+    string from = 1;
+    string to = 2;
+    float amount = 3;
+}
+
+message CreationRequest{
+    int32 difficulty = 1;
+    int32 token = 2;
+}
+
+message CreationResponse{
+    string result = 1;
+}
+
+message AddBlockRequest{
+    Block block = 1;
+    int32 token = 2;
+}
+
+message AddBlockResponse{
+    string result = 1;
+    string hash = 2;
+}
+
+message IsValidRequest{
+    int32 redundancy = 1;
+    int32 token = 2;
+}
+
+message IsValidResponse{
+    string result = 1;
+}
+
+service ClientServerService{
+    // Unary
+    rpc CreateBlockchain(CreationRequest) returns (CreationResponse) {};
+
+    // Client Streaming
+    rpc AddBlock(stream AddBlockRequest) returns (AddBlockResponse) {}; 
+
+    // Server Streaming - Return response to all client if the blockchain is corrupted
+    rpc IsValid(IsValidRequest) returns (stream IsValidResponse) {}; 
+}
+
+

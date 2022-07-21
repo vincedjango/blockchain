@@ -1,4 +1,4 @@
-package main
+package blockchain
 
 import (
 	"crypto/sha256"
@@ -31,10 +31,13 @@ func (b Block) calculateHash() string {
 }
 
 func (b *Block) mine(difficulty int) {
+	var i int
 	for !strings.HasPrefix(b.hash, strings.Repeat("0", difficulty)) {
 		b.pow++
 		b.hash = b.calculateHash()
+		i++
 	}
+	fmt.Println(i)
 }
 
 func CreateBlockchain(difficulty int) Blockchain {
@@ -49,7 +52,7 @@ func CreateBlockchain(difficulty int) Blockchain {
 	}
 }
 
-func (b *Blockchain) addBlock(from, to string, amount float64) {
+func (b *Blockchain) AddBlock(from, to string, amount float32) {
 	blockData := map[string]interface{}{
 		"from":   from,
 		"to":     to,
@@ -65,7 +68,7 @@ func (b *Blockchain) addBlock(from, to string, amount float64) {
 	b.chain = append(b.chain, newBlock)
 }
 
-func (b Blockchain) isValid() bool {
+func (b Blockchain) IsValid() bool {
 	for i := range b.chain[1:] {
 		previousBlock := b.chain[i]
 		currentBlock := b.chain[i+1]
@@ -74,17 +77,4 @@ func (b Blockchain) isValid() bool {
 		}
 	}
 	return true
-}
-
-
-func main() {
-        // create a new blockchain instance with a mining difficulty of 2
-        blockchain := CreateBlockchain(2)
-
-        // record transactions on the blockchain for Alice, Bob, and John
-        blockchain.addBlock("Alice", "Bob", 5)
-        blockchain.addBlock("John", "Bob", 2)
-
-        // check if the blockchain is valid; expecting true
-        fmt.Println(blockchain.isValid())
 }

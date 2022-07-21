@@ -1,0 +1,8 @@
+go 1.18
+
+use (
+	./blockchain
+	./clientserver/client
+	./clientserver/server
+	./proto
+)
